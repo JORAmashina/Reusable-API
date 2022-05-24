@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct Node
 {
@@ -10,12 +11,16 @@ typedef struct Node
     struct Node * next;
 }Node;
 
-void add_node (Node** list, int set_id, const void* set_data) //add new data
+void add_node (Node** list, int set_id, const void* data, size_t size) //add new data
 {
     Node* new_element = (Node*)malloc(sizeof(Node)); 
 
+    memset(new_element, 0, sizeof(new_element));
+    new_element -> data = malloc(size);
+    memcpy(new_element -> data, data);
     new_element -> id = set_id;
-    new_element -> data = set_data;
+    //new_element -> data = data;
+    new_element -> size = size;
 
     new_element -> next = *list;
     *list = new_element;
@@ -60,6 +65,20 @@ void clear (Node** list)
 
 }
 
+
+// size_t stack_size(const Node* list)
+// { // TODO: count size here
+//     Node* curr;
+//     if (list != NULL)
+//         memcpy(&curr, &list, sizeof(Node*));
+//     else
+//         return 0;
+//     size_t i = 1;
+//     while (curr = curr->next)
+//         i++;
+//     return i;
+// }
+
 // void reset_node_to_id (Node** list,int set_id, char* set_data)
 // {
 //     while (list != NULL) 
@@ -87,12 +106,14 @@ void clear (Node** list)
 int main ()
 {
     Node* list = NULL;
-
-    add_node(&list, 0, &"1");
-    // add_node(&list, 1, "2");
-    // add_node(&list, 2, "3");
+    int x = 1;
+    add_node(&list, 0, &x, sizeof(x));
+    x++;
+    add_node(&list, 1, &x, sizeof(x));
+    x++;
+    add_node(&list, 2, &x, sizeof(x));
    
-    clear(&list);
+    //clear(&list);
     //delete_to_element_node(&list, 2);
     // Node* to_delete = list;
     // list = list-> next;
@@ -100,7 +121,7 @@ int main ()
 
     while (list != NULL)
     {
-        printf("id = %d, data = %s\n", list -> id, list ->data);
+        printf("id = %d, data = %d\n", list -> id, list -> data);
         list = list -> next;
     }   
 
